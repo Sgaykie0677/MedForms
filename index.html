@@ -111,6 +111,7 @@
         <button id="priorAuthButton" class="px-4 py-2 my-1 rounded-full text-gray-800 font-semibold bg-gray-300 hover:bg-gray-400 transition duration-300">Prior Auth Form</button>
         <button id="groupCodesButton" class="px-4 py-2 my-1 rounded-full text-gray-800 font-semibold bg-gray-300 hover:bg-gray-400 transition duration-300">Group Codes</button>
         <button id="carcQuizButton" class="px-4 py-2 my-1 rounded-full text-gray-800 font-semibold bg-gray-300 hover:bg-gray-400 transition duration-300">CARC Quiz</button>
+        <button id="overviewButton" class="px-4 py-2 my-1 rounded-full text-gray-800 font-semibold bg-gray-300 hover:bg-gray-400 transition duration-300">Form Overview</button>
     </div>
 
     <!-- CMS-1500 Form -->
@@ -323,12 +324,12 @@
             <div class="bg-gray-50 rounded-lg p-6 flex flex-col items-center text-center">
                 <h3 class="text-3xl font-bold text-red-600">CO</h3>
                 <h4 class="text-lg font-semibold mt-2 mb-1">Contractual Obligation</h4>
-                <p class="text-gray-700">The amount is a discount or adjustment based on the provider's contract with the payer. **This amount cannot be billed to the patient.**</p>
+                <p class="text-gray-700">The amount is a discount or adjustment based on the provider's contract with the payer. <b>This amount cannot be billed to the patient.</b></p>
             </div>
             <div class="bg-gray-50 rounded-lg p-6 flex flex-col items-center text-center">
                 <h3 class="text-3xl font-bold text-blue-600">PR</h3>
                 <h4 class="text-lg font-semibold mt-2 mb-1">Patient Responsibility</h4>
-                <p class="text-gray-700">The amount is the patient's financial responsibility, such as a **deductible, copayment, or coinsurance**. **This amount should be billed to the patient.**</p>
+                <p class="text-gray-700">The amount is the patient's financial responsibility, such as a <b>deductible, copayment, or coinsurance</b>. <b>This amount should be billed to the patient.</b></p>
             </div>
             <div class="bg-gray-50 rounded-lg p-6 flex flex-col items-center text-center">
                 <h3 class="text-3xl font-bold text-gray-600">OA</h3>
@@ -366,6 +367,40 @@
             <button id="nextQuestionButton" class="mt-4 px-6 py-2 rounded-full text-white font-semibold bg-blue-600 hover:bg-blue-700 transition duration-300 w-full" style="display: none;">Next Question</button>
         </div>
     </div>
+
+    <!-- New Form Overview Section -->
+    <div id="overviewSection" class="form-section">
+        <h2 class="text-2xl mb-4 text-center">Medical Claims Forms: A Quick Overview</h2>
+        <p class="text-gray-600 text-center mb-8">Understanding the difference between the forms and the codes is key to successful billing.</p>
+
+        <div class="space-y-8">
+            <div class="p-6 bg-blue-50 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-blue-800">CMS-1500 Form</h3>
+                <p class="mt-2 text-gray-700">This form is used for <b>professional claims</b>—meaning services provided by physicians, physical therapists, or other non-institutional providers. Beyond the diagnosis and procedure codes, the form is broken down into three main sections:</p>
+                <ul class="list-disc list-inside mt-4 space-y-2 text-gray-700">
+                    <li><b>Patient and Insured Information:</b> This section captures all the patient's personal details, including their name, address, date of birth, and their insurance policy number.</li>
+                    <li><b>Physician or Supplier Information:</b> This section identifies the provider. It includes the provider's name, address, NPI (National Provider Identifier) number, and their tax identification number.</li>
+                    <li><b>Service Information:</b> This is the heart of the claim, where you detail each service. It includes the date, place of service code, the CPT code for the procedure, and a diagnosis pointer that links the service to the reason it was performed.</li>
+                </ul>
+            </div>
+
+            <div class="p-6 bg-green-50 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-green-800">UB-04 Form</h3>
+                <p class="mt-2 text-gray-700">This form is for <b>institutional claims</b> and is used by facilities like hospitals, skilled nursing facilities, and ambulatory surgery centers. It's designed to capture a broader range of services. The key difference from the CMS-1500 is its use of <b>Revenue Codes</b>.</p>
+                <ul class="list-disc list-inside mt-4 space-y-2 text-gray-700">
+                    <li><b>Patient and Facility Information:</b> Similar to the CMS-1500, this section contains all patient and facility demographics.</li>
+                    <li><b>Admission and Discharge:</b> This section is unique to the UB-04 and includes details like the patient's admission date and time, discharge date, and the type of admission (e.g., inpatient, emergency).</li>
+                    <li><b>Revenue Codes:</b> This is the most crucial part. Instead of listing individual CPT codes, the UB-04 uses four-digit revenue codes to categorize all services and charges, from room and board to specific lab tests.</li>
+                </ul>
+            </div>
+
+            <div class="p-6 bg-yellow-50 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-yellow-800">The Language of Denial: CARCs & RARCs</h3>
+                <p class="mt-2 text-gray-700">Ultimately, mastering claims isn't just about filling out the forms correctly. It's about understanding why a claim was denied and how to fix it. This is where <b>Claim Adjustment Reason Codes (CARCs)</b> and <b>Remittance Advice Remark Codes (RARCs)</b> come in. Think of these as the "language of denial." They are the most common codes you'll see on an Explanation of Benefits (EOB) and explain exactly why a payer reduced or denied a claim.</p>
+            </div>
+        </div>
+    </div>
+
 
 </div>
 
@@ -556,6 +591,42 @@
                 { carc: "B1", group: "PI", text: "PI-B1 (Reduction due to legislative mandate)", isCorrect: true, rationale: "Correct! This is a reduction initiated by the payer (PI) due to a legislative mandate (B1)." }
             ]
         },
+        {
+            question: "A physician's claim for a secondary procedure is denied, with the payer's Explanation of Benefits (EOB) noting that the service is included in the primary procedure's payment. What is the most likely **Group Code** and **CARC** combination?",
+            answers: [
+                { carc: "97", group: "CO", text: "CO-97 (Bundled service)", isCorrect: true, rationale: "This indicates that the service is considered part of the primary procedure payment due to a contractual agreement (CO), and the reason is bundling (CARC 97)." },
+                { carc: "97", group: "OA", text: "OA-97 (Bundled service)", isCorrect: false, rationale: "While the reason code is correct, the denial is due to a contractual agreement, making the group code CO, not OA." },
+                { carc: "1", group: "PR", text: "PR-1 (Deductible)", isCorrect: false, rationale: "This is an administrative denial, not a patient financial responsibility, and is not related to a deductible." },
+                { carc: "18", group: "OA", text: "OA-18 (Duplicate claim)", isCorrect: false, rationale: "The claim is being denied for a bundling issue, not because it is a duplicate." }
+            ]
+        },
+        {
+            question: "An EOB shows a reduction in payment with the note 'Provider failed to meet electronic claim submission requirements.' The amount cannot be billed to the patient. What **Group Code** and **CARC** apply?",
+            answers: [
+                { carc: "15", group: "PI", text: "PI-15 (Provider error in submission)", isCorrect: true, rationale: "This is a reduction initiated by the payer (PI) for an administrative error on the provider's part, and CARC 15 applies to this type of error." },
+                { carc: "15", group: "CO", text: "CO-15 (Provider error in submission)", isCorrect: false, rationale: "The group code should be PI, as this is an administrative reduction initiated by the payer, not a contractual obligation." },
+                { carc: "16", group: "OA", text: "OA-16 (Missing/invalid information)", isCorrect: false, rationale: "While it is an administrative error, the group code PI is more specific for payer-initiated reductions related to administrative requirements." },
+                { carc: "15", group: "PR", text: "PR-15 (Provider error in submission)", isCorrect: false, rationale: "The patient is not responsible for this amount, so the group code cannot be PR." }
+            ]
+        },
+        {
+            question: "A patient's insurance policy was terminated two days before the date of service. The claim is denied. What **Group Code** and **CARC** combination would explain this denial?",
+            answers: [
+                { carc: "27", group: "OA", text: "OA-27 (Coverage terminated)", isCorrect: true, rationale: "The denial is an administrative adjustment (OA) because the patient's coverage was not active on the date of service (CARC 27)." },
+                { carc: "27", group: "CO", text: "CO-27 (Coverage terminated)", isCorrect: false, rationale: "This is a denial due to an administrative issue with the patient's policy, not a contractual obligation with the provider." },
+                { carc: "27", group: "PR", text: "PR-27 (Coverage terminated)", isCorrect: false, rationale: "The group code should be OA, as this is a denial of the claim itself due to a policy issue, not a patient financial responsibility." },
+                { carc: "16", group: "OA", text: "OA-16 (Missing/invalid information)", isCorrect: false, rationale: "The specific reason is coverage termination, not missing information on the claim." }
+            ]
+        },
+        {
+            question: "You receive an Explanation of Benefits (EOB) showing a claim payment was reversed because another insurance company was later identified as the primary payer. What **Group Code** and **CARC** would you expect to see?",
+            answers: [
+                { carc: "B2", group: "CR", text: "CR-B2 (Payment based on a Third Party Liability)", isCorrect: true, rationale: "The group code is CR because the original payment is being corrected and reversed, and B2 is used when a third party is responsible." },
+                { carc: "B2", group: "OA", text: "OA-B2 (Payment based on a Third Party Liability)", isCorrect: false, rationale: "The group code should be CR, as the action is a correction and reversal of a previous payment, not a general other adjustment." },
+                { carc: "14", group: "OA", text: "OA-14 (Non-specific denial)", isCorrect: false, rationale: "While it is a denial, there is a more specific CARC (B2) and group code (CR) that applies to this situation." },
+                { carc: "B2", group: "CO", text: "CO-B2 (Payment based on a Third Party Liability)", isCorrect: false, rationale: "The group code should be CR, as the action is a correction and reversal of a previous payment, not a contractual obligation." }
+            ]
+        },
     ];
 
     let currentQuestionIndex = 0;
@@ -568,12 +639,14 @@
     const priorAuthButton = document.getElementById('priorAuthButton');
     const groupCodesButton = document.getElementById('groupCodesButton');
     const carcQuizButton = document.getElementById('carcQuizButton');
+    const overviewButton = document.getElementById('overviewButton');
 
     const cms1500Form = document.getElementById('cms1500Form');
     const ub04Form = document.getElementById('ub04Form');
     const priorAuthForm = document.getElementById('priorAuthForm');
     const groupCodesReference = document.getElementById('groupCodesReference');
     const carcQuiz = document.getElementById('carcQuiz');
+    const overviewSection = document.getElementById('overviewSection');
 
     const hintButtons = document.querySelectorAll('.hint-button');
     const hintModal = document.getElementById('hintModal');
@@ -589,8 +662,8 @@
 
     // --- Functions ---
     function toggleForm(formToShow) {
-        const allForms = [cms1500Form, ub04Form, priorAuthForm, groupCodesReference, carcQuiz];
-        const allButtons = [cmsButton, ub04Button, priorAuthButton, groupCodesButton, carcQuizButton];
+        const allForms = [cms1500Form, ub04Form, priorAuthForm, groupCodesReference, carcQuiz, overviewSection];
+        const allButtons = [cmsButton, ub04Button, priorAuthButton, groupCodesButton, carcQuizButton, overviewButton];
 
         allForms.forEach(form => form.classList.remove('active-form'));
         allButtons.forEach(button => {
@@ -623,6 +696,11 @@
             carcQuizButton.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
             carcQuizButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
             startQuiz();
+        } else if (formToShow === 'overview') {
+            overviewSection.classList.add('active-form');
+            overviewButton.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
+            overviewButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
+            stopQuizTimer();
         }
     }
 
@@ -640,6 +718,7 @@
     }
 
     function startQuiz() {
+        carcQuestions.sort(() => Math.random() - 0.5);
         currentQuestionIndex = 0;
         score = 0;
         secondsElapsed = 0;
@@ -726,6 +805,7 @@
     priorAuthButton.addEventListener('click', () => toggleForm('priorAuth'));
     groupCodesButton.addEventListener('click', () => toggleForm('groupCodesReference'));
     carcQuizButton.addEventListener('click', () => toggleForm('carcQuiz'));
+    overviewButton.addEventListener('click', () => toggleForm('overview'));
     nextQuestionButton.addEventListener('click', nextQuestion);
 
     hintButtons.forEach(button => {
