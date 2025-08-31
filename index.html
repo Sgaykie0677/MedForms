@@ -109,6 +109,7 @@
         <button id="cmsButton" class="px-4 py-2 my-1 rounded-full text-white font-semibold bg-blue-600 hover:bg-blue-700 transition duration-300">CMS-1500 Form</button>
         <button id="ub04Button" class="px-4 py-2 my-1 rounded-full text-gray-800 font-semibold bg-gray-300 hover:bg-gray-400 transition duration-300">UB-04 Form</button>
         <button id="priorAuthButton" class="px-4 py-2 my-1 rounded-full text-gray-800 font-semibold bg-gray-300 hover:bg-gray-400 transition duration-300">Prior Auth Form</button>
+        <button id="groupCodesButton" class="px-4 py-2 my-1 rounded-full text-gray-800 font-semibold bg-gray-300 hover:bg-gray-400 transition duration-300">Group Codes</button>
         <button id="carcQuizButton" class="px-4 py-2 my-1 rounded-full text-gray-800 font-semibold bg-gray-300 hover:bg-gray-400 transition duration-300">CARC Quiz</button>
     </div>
 
@@ -313,12 +314,50 @@
         </div>
     </div>
 
+    <!-- Group Codes Reference -->
+    <div id="groupCodesReference" class="form-section">
+        <h2 class="text-2xl mb-4 text-center">Common Claim Adjustment Group Codes</h2>
+        <p class="text-gray-600 text-center mb-8">Group codes clarify who is responsible for the unpaid amount of a claim.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-gray-50 rounded-lg p-6 flex flex-col items-center text-center">
+                <h3 class="text-3xl font-bold text-red-600">CO</h3>
+                <h4 class="text-lg font-semibold mt-2 mb-1">Contractual Obligation</h4>
+                <p class="text-gray-700">The amount is a discount or adjustment based on the provider's contract with the payer. **This amount cannot be billed to the patient.**</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-6 flex flex-col items-center text-center">
+                <h3 class="text-3xl font-bold text-blue-600">PR</h3>
+                <h4 class="text-lg font-semibold mt-2 mb-1">Patient Responsibility</h4>
+                <p class="text-gray-700">The amount is the patient's financial responsibility, such as a **deductible, copayment, or coinsurance**. **This amount should be billed to the patient.**</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-6 flex flex-col items-center text-center">
+                <h3 class="text-3xl font-bold text-gray-600">OA</h3>
+                <h4 class="text-lg font-semibold mt-2 mb-1">Other Adjustment</h4>
+                <p class="text-gray-700">Used for non-CO/PR adjustments. This might include a service that was paid at the wrong rate or a claim that requires more information before it can be processed.</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-6 flex flex-col items-center text-center">
+                <h3 class="text-3xl font-bold text-yellow-600">CR</h3>
+                <h4 class="text-lg font-semibold mt-2 mb-1">Correction and Reversal</h4>
+                <p class="text-gray-700">A prior claim was processed incorrectly and is being corrected. This indicates that the original payment is being reversed and a new payment (or denial) is being issued.</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-6 flex flex-col items-center text-center">
+                <h3 class="text-3xl font-bold text-purple-600">PI</h3>
+                <h4 class="text-lg font-semibold mt-2 mb-1">Payer Initiated Reduction</h4>
+                <p class="text-gray-700">The amount is a reduction in payment initiated by the payer for an administrative reason, such as a penalty for not meeting a certain performance threshold.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- CARC Quiz Section -->
     <div id="carcQuiz" class="form-section">
         <h2 class="text-2xl mb-4 text-center">CARC Quiz</h2>
         <p class="text-gray-600 text-center mb-8">Test your knowledge of Claim Adjustment Reason Codes.</p>
 
         <div class="bg-gray-50 rounded-lg p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <span id="quizScore" class="font-bold text-lg">Score: 0</span>
+                <span id="quizTimer" class="font-bold text-lg">Time: 0s</span>
+            </div>
             <h3 id="quizQuestion" class="text-lg font-medium mb-4">Question loading...</h3>
             <div id="answerOptions" class="space-y-3">
                 <!-- Answer buttons will be dynamically added here -->
@@ -446,44 +485,96 @@
 
     const carcQuestions = [
         {
-            question: "A claim for a routine office visit is denied, and the Explanation of Benefits (EOB) states that the patient is responsible for a fixed amount before the insurance company pays anything. Which CARC best describes this?",
+            question: "A claim for a routine office visit is denied, and the Explanation of Benefits (EOB) states that the patient is responsible for a fixed amount before the insurance company pays anything. What is the most likely **Group Code** and **CARC**?",
             answers: [
-                { code: "1", text: "Deductible", isCorrect: false, rationale: "Incorrect. While a deductible is a patient responsibility, it is a variable amount that must be met before insurance pays. A fixed amount is a copayment." },
-                { code: "2", text: "Coinsurance", isCorrect: false, rationale: "Incorrect. Coinsurance is a percentage of the allowed amount, not a fixed amount." },
-                { code: "3", text: "Copayment", isCorrect: true, rationale: "Correct! CARC 3 indicates that the patient is responsible for a fixed copayment amount, as per their health plan." },
-                { code: "16", text: "Claim/Service has missing information", isCorrect: false, rationale: "Incorrect. This code is for administrative denials, not for a patient's financial responsibility." }
+                { carc: "1", group: "PR", text: "PR-1 (Deductible)", isCorrect: false, rationale: "Incorrect. While a deductible is patient responsibility (PR), it's not a fixed amount. A copayment (CARC 3) is a fixed amount." },
+                { carc: "3", group: "PR", text: "PR-3 (Copayment)", isCorrect: true, rationale: "Correct! The patient is responsible (PR) for a fixed copayment (CARC 3)." },
+                { carc: "2", group: "PR", text: "PR-2 (Coinsurance)", isCorrect: false, rationale: "Incorrect. Coinsurance (CARC 2) is a percentage, not a fixed amount." },
+                { carc: "16", group: "OA", text: "OA-16 (Missing Information)", isCorrect: false, rationale: "Incorrect. This code is for administrative denials (OA), not patient financial responsibility (PR)." }
             ]
         },
         {
-            question: "An X-ray claim is partially paid, but a portion of the payment is reduced. The EOB says, 'This service is not a covered benefit under the terms of the patient's plan.' Which CARC is likely on this claim?",
+            question: "An X-ray claim is partially paid, but a portion is reduced because the service is 'not a covered benefit under the terms of the patient's plan.' What **Group Code** and **CARC** would you expect to see?",
             answers: [
-                { code: "11", text: "Services not paid", isCorrect: false, rationale: "Incorrect. This is a generic code. There's a more specific code for non-covered services." },
-                { code: "50", text: "Non-covered services", isCorrect: true, rationale: "Correct! CARC 50 is used when the billed service is not a covered benefit under the patient's plan, resulting in a denial or partial payment." },
-                { code: "23", text: "Payment denied due to precertification/authorization", isCorrect: false, rationale: "Incorrect. This code is specifically for when prior authorization was required but not obtained." },
-                { code: "96", text: "Non-covered charges", isCorrect: false, rationale: "Incorrect. This is a more general code, whereas CARC 50 is specific to services that aren't covered by the plan." }
+                { carc: "50", group: "CO", text: "CO-50 (Non-covered services)", isCorrect: true, rationale: "Correct! The service is not covered, so it's a contractual obligation (CO) and the reason is non-covered services (CARC 50)." },
+                { carc: "11", group: "OA", text: "OA-11 (Services not paid)", isCorrect: false, rationale: "Incorrect. While true, a more specific code combination exists." },
+                { carc: "23", group: "OA", text: "OA-23 (No authorization)", isCorrect: false, rationale: "Incorrect. The denial isn't for a lack of authorization, but for the service not being a benefit." },
+                { carc: "50", group: "PR", text: "PR-50 (Non-covered services)", isCorrect: false, rationale: "Incorrect. This is not a patient responsibility. The provider cannot bill the patient for a non-covered service unless the patient signed an ABN." }
             ]
         },
         {
-            question: "You submit a claim with an incomplete patient ID number. The payer denies the claim and sends an EOB that says, 'Missing or invalid patient identifier.' What CARC would you expect to see?",
+            question: "You submit a claim with an incomplete patient ID. The payer denies it, stating 'Missing or invalid patient identifier.' What **Group Code** and **CARC** would be used?",
             answers: [
-                { code: "1", text: "Deductible", isCorrect: false, rationale: "Incorrect. This code is about patient financial responsibility, not administrative issues." },
-                { code: "4", text: "Procedure code missing/invalid", isCorrect: false, rationale: "Incorrect. This code refers to a problem with the CPT code, not the patient ID." },
-                { code: "16", text: "Claim/Service lacks information or has a different format", isCorrect: true, rationale: "Correct! CARC 16 is a very common administrative denial code used when a claim is missing required information like a patient ID, provider NPI, or has formatting errors." },
-                { code: "50", text: "Non-covered services", isCorrect: false, rationale: "Incorrect. This is a denial for a service that is not a covered benefit, not a data entry error." }
+                { carc: "16", group: "OA", text: "OA-16 (Lacks Information)", isCorrect: true, rationale: "Correct! This is an administrative denial (OA) due to a missing/invalid identifier (CARC 16)." },
+                { carc: "1", group: "PR", text: "PR-1 (Deductible)", isCorrect: false, rationale: "Incorrect. This isn't a patient financial responsibility." },
+                { carc: "4", group: "OA", text: "OA-4 (Procedure code missing)", isCorrect: false, rationale: "Incorrect. This refers to the procedure code, not the patient ID." },
+                { carc: "50", group: "CO", text: "CO-50 (Non-covered services)", isCorrect: false, rationale: "Incorrect. The denial is for an administrative error, not for the service itself." }
             ]
-        }
+        },
+        {
+            question: "Your office bills a procedure for $250. The insurance company's allowed amount is $200. The claim is paid at the lower rate. What **Group Code** and **CARC** explain the $50 reduction?",
+            answers: [
+                { carc: "45", group: "PR", text: "PR-45 (Exceeded fee schedule)", isCorrect: false, rationale: "Incorrect. This reduction is a contractual obligation, not a patient responsibility." },
+                { carc: "2", group: "PR", text: "PR-2 (Coinsurance)", isCorrect: false, rationale: "Incorrect. This is not coinsurance, but a charge exceeding the contract." },
+                { carc: "45", group: "CO", text: "CO-45 (Exceeded fee schedule)", isCorrect: true, rationale: "Correct! The reduction is due to a contract (CO) and the reason is that the charge exceeded the fee schedule (CARC 45)." },
+                { carc: "97", group: "CO", text: "CO-97 (Bundled service)", isCorrect: false, rationale: "Incorrect. This isn't a bundling issue; it's a difference between the billed amount and the allowed amount." }
+            ]
+        },
+        {
+            question: "A patient's claim is denied because they did not obtain a required pre-authorization. The patient is financially responsible for the full cost of the service. What **Group Code** and **CARC** would you use?",
+            answers: [
+                { carc: "23", group: "CO", text: "CO-23 (No authorization)", isCorrect: false, rationale: "Incorrect. Since the patient is responsible for the cost, the group code cannot be CO." },
+                { carc: "23", group: "PR", text: "PR-23 (No authorization)", isCorrect: true, rationale: "Correct! The denial is due to a lack of authorization (CARC 23) and since the patient is responsible for the cost, the group code is PR." },
+                { carc: "50", group: "PR", text: "PR-50 (Non-covered service)", isCorrect: false, rationale: "Incorrect. This is an authorization issue, not a non-covered service." },
+                { carc: "18", group: "OA", text: "OA-18 (Duplicate claim)", isCorrect: false, rationale: "Incorrect. This is not a duplicate claim issue." }
+            ]
+        },
+        {
+            question: "The payer receives two identical claims from your office for the same patient and date of service. The second claim is rejected as a duplicate. What **Group Code** and **CARC** would be used?",
+            answers: [
+                { carc: "18", group: "OA", text: "OA-18 (Duplicate claim)", isCorrect: true, rationale: "Correct! This is an administrative denial (OA) because it is a duplicate claim (CARC 18)." },
+                { carc: "29", group: "OA", text: "OA-29 (Timely filing expired)", isCorrect: false, rationale: "Incorrect. The claim was not filed late, it was a duplicate submission." },
+                { carc: "18", group: "CO", text: "CO-18 (Duplicate claim)", isCorrect: false, rationale: "Incorrect. It is not a contractual obligation, but a processing error on the claim." },
+                { carc: "16", group: "OA", text: "OA-16 (Lacks information)", isCorrect: false, rationale: "Incorrect. The claim has all the information, but it is a duplicate." }
+            ]
+        },
+        {
+            question: "A payer's system erroneously paid a claim twice. On the new EOB, you see a full reversal of the duplicate payment. What **Group Code** and **CARC** would you expect to see?",
+            answers: [
+                { carc: "B5", group: "CR", text: "CR-B5 (Payment erroneously made)", isCorrect: true, rationale: "Correct! The group code is CR because the original payment was a correction/reversal, and B5 is used specifically for erroneous payments." },
+                { carc: "18", group: "OA", text: "OA-18 (Duplicate claim)", isCorrect: false, rationale: "Incorrect. While it was a duplicate, the action is a correction of an erroneous payment." },
+                { carc: "97", group: "PI", text: "PI-97 (Bundled service)", isCorrect: false, rationale: "Incorrect. This is not a bundling issue; it is a reversal of a previous error." },
+                { carc: "23", group: "CO", text: "CO-23 (No authorization)", isCorrect: false, rationale: "Incorrect. This has nothing to do with authorization." }
+            ]
+        },
+        {
+            question: "A new state law requires a small fee for all outpatient services. The payer deducts this fee from the payment. You see a code on the EOB indicating the reduction. What **Group Code** and **CARC** is most likely used?",
+            answers: [
+                { carc: "96", group: "PI", text: "PI-96 (Non-covered charge)", isCorrect: false, rationale: "Incorrect. This isn't a non-covered charge; it's a deduction required by a third party." },
+                { carc: "A1", group: "OA", text: "OA-A1 (Charge exceeded)", isCorrect: false, rationale: "Incorrect. The charge was not excessive." },
+                { carc: "22", group: "CO", text: "CO-22 (Missing data)", isCorrect: false, rationale: "Incorrect. All data was present. The reduction is not a contractual obligation." },
+                { carc: "B1", group: "PI", text: "PI-B1 (Reduction due to legislative mandate)", isCorrect: true, rationale: "Correct! This is a reduction initiated by the payer (PI) due to a legislative mandate (B1)." }
+            ]
+        },
     ];
 
     let currentQuestionIndex = 0;
+    let score = 0;
+    let timerInterval = null;
+    let secondsElapsed = 0;
 
     const cmsButton = document.getElementById('cmsButton');
     const ub04Button = document.getElementById('ub04Button');
     const priorAuthButton = document.getElementById('priorAuthButton');
+    const groupCodesButton = document.getElementById('groupCodesButton');
     const carcQuizButton = document.getElementById('carcQuizButton');
+
     const cms1500Form = document.getElementById('cms1500Form');
     const ub04Form = document.getElementById('ub04Form');
     const priorAuthForm = document.getElementById('priorAuthForm');
+    const groupCodesReference = document.getElementById('groupCodesReference');
     const carcQuiz = document.getElementById('carcQuiz');
+
     const hintButtons = document.querySelectorAll('.hint-button');
     const hintModal = document.getElementById('hintModal');
     const closeModalButton = document.getElementById('closeModal');
@@ -493,11 +584,13 @@
     const answerOptionsEl = document.getElementById('answerOptions');
     const feedbackEl = document.getElementById('feedback');
     const nextQuestionButton = document.getElementById('nextQuestionButton');
+    const quizScoreEl = document.getElementById('quizScore');
+    const quizTimerEl = document.getElementById('quizTimer');
 
     // --- Functions ---
     function toggleForm(formToShow) {
-        const allForms = [cms1500Form, ub04Form, priorAuthForm, carcQuiz];
-        const allButtons = [cmsButton, ub04Button, priorAuthButton, carcQuizButton];
+        const allForms = [cms1500Form, ub04Form, priorAuthForm, groupCodesReference, carcQuiz];
+        const allButtons = [cmsButton, ub04Button, priorAuthButton, groupCodesButton, carcQuizButton];
 
         allForms.forEach(form => form.classList.remove('active-form'));
         allButtons.forEach(button => {
@@ -509,19 +602,27 @@
             cms1500Form.classList.add('active-form');
             cmsButton.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
             cmsButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
+            stopQuizTimer();
         } else if (formToShow === 'ub04') {
             ub04Form.classList.add('active-form');
             ub04Button.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
             ub04Button.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
+            stopQuizTimer();
         } else if (formToShow === 'priorAuth') {
             priorAuthForm.classList.add('active-form');
             priorAuthButton.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
             priorAuthButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
+            stopQuizTimer();
+        } else if (formToShow === 'groupCodesReference') {
+            groupCodesReference.classList.add('active-form');
+            groupCodesButton.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
+            groupCodesButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
+            stopQuizTimer();
         } else if (formToShow === 'carcQuiz') {
             carcQuiz.classList.add('active-form');
             carcQuizButton.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
             carcQuizButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
-            showQuestion();
+            startQuiz();
         }
     }
 
@@ -529,7 +630,6 @@
         const info = formInfo[formName][fieldName];
         if (info) {
             modalTitle.textContent = info.title;
-            // Use innerHTML to allow for a styled description with bolded parts
             modalDescription.innerHTML = `<p><b>What:</b> ${info.what}</p><p class="mt-2"><b>Why:</b> ${info.why}</p>`;
             hintModal.classList.add('active');
         }
@@ -539,13 +639,36 @@
         hintModal.classList.remove('active');
     }
 
+    function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        secondsElapsed = 0;
+        quizScoreEl.textContent = `Score: ${score}`;
+        quizTimerEl.textContent = `Time: 0s`;
+        startQuizTimer();
+        showQuestion();
+    }
+
+    function startQuizTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            secondsElapsed++;
+            quizTimerEl.textContent = `Time: ${secondsElapsed}s`;
+        }, 1000);
+    }
+
+    function stopQuizTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+    }
+
     function showQuestion() {
         if (currentQuestionIndex >= carcQuestions.length) {
-            quizQuestionEl.textContent = "You've completed the quiz! Click 'CARC Quiz' to restart.";
+            stopQuizTimer();
+            quizQuestionEl.textContent = `Quiz Complete! You answered ${score} out of ${carcQuestions.length} correctly in ${secondsElapsed} seconds. Click 'CARC Quiz' to restart.`;
             answerOptionsEl.innerHTML = '';
             nextQuestionButton.style.display = 'none';
             feedbackEl.textContent = '';
-            currentQuestionIndex = 0;
             return;
         }
 
@@ -557,7 +680,7 @@
 
         question.answers.forEach(answer => {
             const button = document.createElement('button');
-            button.textContent = `${answer.code}: ${answer.text}`;
+            button.textContent = `${answer.group}-${answer.carc}: ${answer.text}`;
             button.className = "quiz-button w-full text-left py-2 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 transition duration-300";
             button.onclick = () => checkAnswer(button, answer);
             answerOptionsEl.appendChild(button);
@@ -572,14 +695,16 @@
         });
 
         if (answer.isCorrect) {
+            score++;
+            quizScoreEl.textContent = `Score: ${score}`;
             button.classList.add('bg-green-500', 'text-white');
             feedbackEl.textContent = "Correct! " + answer.rationale;
             feedbackEl.style.color = '#10B981';
         } else {
             button.classList.add('bg-red-500', 'text-white');
             const correctButton = Array.from(allButtons).find(btn => {
-                const answerData = carcQuestions[currentQuestionIndex].answers.find(a => `${a.code}: ${a.text}` === btn.textContent);
-                return answerData && answerData.isCorrect;
+                const buttonText = btn.textContent;
+                return carcQuestions[currentQuestionIndex].answers.find(a => a.isCorrect && `${a.group}-${a.carc}: ${a.text}` === buttonText);
             });
             if (correctButton) {
                 correctButton.classList.add('bg-green-500', 'text-white');
@@ -599,6 +724,7 @@
     cmsButton.addEventListener('click', () => toggleForm('cms1500'));
     ub04Button.addEventListener('click', () => toggleForm('ub04'));
     priorAuthButton.addEventListener('click', () => toggleForm('priorAuth'));
+    groupCodesButton.addEventListener('click', () => toggleForm('groupCodesReference'));
     carcQuizButton.addEventListener('click', () => toggleForm('carcQuiz'));
     nextQuestionButton.addEventListener('click', nextQuestion);
 
