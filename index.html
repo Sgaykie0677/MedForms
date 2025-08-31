@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Claims Form Trainer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .form-container {
+            max-width: 90%;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+        }
+        h1, h2 {
+            font-weight: 700;
+            color: #111827;
+        }
+        input, textarea {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            width: 100%;
+            transition: all 0.2s ease-in-out;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.5);
+        }
+        .hint-button, .quiz-button {
+            background-color: #d1d5db;
+            color: #374151;
+            border-radius: 9999px;
+            padding: 0.25rem 0.6rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            border: none;
+        }
+        .hint-button:hover, .quiz-button:hover {
+            background-color: #9ca3af;
+        }
+        .form-section {
+            display: none;
+        }
+        .active-form {
+            display: block;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transform: scale(0.95);
+            transition: transform 0.3s ease-in-out;
+        }
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #4b5563;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+<div class="form-container">
+    <h1 class="text-3xl text-center mb-6">Medical Claims Form Trainer</h1>
+
+    <div class="flex justify-center mb-8 space-x-4 flex-wrap">
+        <button id="cmsButton" class="px-4 py-2 my-1 rounded-full text-white font-semibold bg-blue-600 hover:bg-blue-700 transition duration-300">CMS-1500 Form</button>
+        <button id="ub04Button" class="px-4 py-2 my-1 rounded-full text-gray-800 font-semibold bg-gray-300 hover:bg-gray-400 transition duration-300">UB-04 Form</button>
+        <button id="priorAuthButton" class="px-4 py-2 my-1 rounded-full text-gray-800 font-semibold bg-gray-300 hover:bg-gray-400 transition duration-300">Prior Auth Form</button>
+        <button id="carcQuizButton" class="px-4 py-2 my-1 rounded-full text-gray-800 font-semibold bg-gray-300 hover:bg-gray-400 transition duration-300">CARC Quiz</button>
+    </div>
+
+    <!-- CMS-1500 Form -->
+    <div id="cms1500Form" class="form-section active-form">
+        <h2 class="text-2xl mb-4 text-center">CMS-1500 Claim Form</h2>
+        <p class="text-gray-600 text-center mb-8">For professional claims (e.g., physician services, outpatient services).</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Field 1 -->
+            <div class="flex flex-col">
+                <label class="text-sm font-medium mb-1 flex items-center justify-between">
+                    Box 1: Type of Insurance
+                    <button class="hint-button" data-form="cms1500" data-field="box1">Hint</button>
+                </label>
+                <input type="text" id="box1" class="rounded-lg">
+            </div>
+
+            <!-- Field 2 -->
+            <div class="flex flex-col">
+                <label class="text-sm font-medium mb-1 flex items-center justify-between">
+                    Box 2: Patient's Name
+                    <button class="hint-button" data-form="cms1500" data-field="box2">Hint</button>
+                </label>
+                <input type="text" id="box2" class="rounded-lg">
+            </div>
+
+            <!-- Field 21 -->
+            <div class="flex flex-col col-span-1 md:col-span-2 lg:col-span-3">
+                <label class="text-sm font-medium mb-1 flex items-center justify-between">
+                    Box 21: Diagnosis Codes (ICD-10-CM)
+                    <button class="hint-button" data-form="cms1500" data-field="box21">Hint</button>
+                </label>
+                <textarea id="box21" rows="3" class="rounded-lg"></textarea>
+            </div>
+
+            <!-- Field 24A-F (Service Lines) -->
+            <div class="flex flex-col col-span-1 md:col-span-2 lg:col-span-3">
+                <h3 class="text-lg font-semibold mb-2">Service Line Items (Box 24)</h3>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-xs font-medium mb-1 flex items-center justify-between">
+                                Date of Service
+                                <button class="hint-button" data-form="cms1500" data-field="box24_date">Hint</button>
+                            </label>
+                            <input type="text" id="box24_date1" class="rounded-lg text-sm">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs font-medium mb-1 flex items-center justify-between">
+                                Place of Service
+                                <button class="hint-button" data-form="cms1500" data-field="box24_pos">Hint</button>
+                            </label>
+                            <input type="text" id="box24_pos1" class="rounded-lg text-sm">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs font-medium mb-1 flex items-center justify-between">
+                                CPT/HCPCS Code
+                                <button class="hint-button" data-form="cms1500" data-field="box24_cpt">Hint</button>
+                            </label>
+                            <input type="text" id="box24_cpt1" class="rounded-lg text-sm">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs font-medium mb-1 flex items-center justify-between">
+                                Charge
+                                <button class="hint-button" data-form="cms1500" data-field="box24_charge">Hint</button>
+                            </label>
+                            <input type="text" id="box24_charge1" class="rounded-lg text-sm">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs font-medium mb-1 flex items-center justify-between">
+                                Diagnosis Pointer
+                                <button class="hint-button" data-form="cms1500" data-field="box24_pointer">Hint</button>
+                            </label>
+                            <input type="text" id="box24_pointer1" class="rounded-lg text-sm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- UB-04 Form -->
+    <div id="ub04Form" class="form-section">
+        <h2 class="text-2xl mb-4 text-center">UB-04 Claim Form</h2>
+        <p class="text-gray-600 text-center mb-8">For institutional claims (e.g., hospitals, skilled nursing facilities).</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Field 12 -->
+            <div class="flex flex-col">
+                <label class="text-sm font-medium mb-1 flex items-center justify-between">
+                    Box 12: Admission Date
+                    <button class="hint-button" data-form="ub04" data-field="box12">Hint</button>
+                </label>
+                <input type="text" id="ub_box12" class="rounded-lg">
+            </div>
+
+            <!-- Field 13 -->
+            <div class="flex flex-col">
+                <label class="text-sm font-medium mb-1 flex items-center justify-between">
+                    Box 13: Admission Hour
+                    <button class="hint-button" data-form="ub04" data-field="box13">Hint</button>
+                </label>
+                <input type="text" id="ub_box13" class="rounded-lg">
+            </div>
+
+            <!-- Field 66 -->
+            <div class="flex flex-col col-span-1 md:col-span-2 lg:col-span-3">
+                <label class="text-sm font-medium mb-1 flex items-center justify-between">
+                    Box 66: Principal Diagnosis Code
+                    <button class="hint-button" data-form="ub04" data-field="box66">Hint</button>
+                </label>
+                <input type="text" id="ub_box66" class="rounded-lg">
+            </div>
+
+            <!-- Field 42-49 (Revenue Codes) -->
+            <div class="flex flex-col col-span-1 md:col-span-2 lg:col-span-3">
+                <h3 class="text-lg font-semibold mb-2">Revenue Codes & Charges (Box 42-49)</h3>
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-xs font-medium mb-1 flex items-center justify-between">
+                                Revenue Code
+                                <button class="hint-button" data-form="ub04" data-field="box42_revcode">Hint</button>
+                            </label>
+                            <input type="text" id="ub_box42_revcode1" class="rounded-lg text-sm">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs font-medium mb-1 flex items-center justify-between">
+                                Description
+                                <button class="hint-button" data-form="ub04" data-field="box43_desc">Hint</button>
+                            </label>
+                            <input type="text" id="ub_box43_desc1" class="rounded-lg text-sm">
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-xs font-medium mb-1 flex items-center justify-between">
+                                Total Charges
+                                <button class="hint-button" data-form="ub04" data-field="box47_totalcharge">Hint</button>
+                            </label>
+                            <input type="text" id="ub_box47_totalcharge1" class="rounded-lg text-sm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prior Authorization Form -->
+    <div id="priorAuthForm" class="form-section">
+        <h2 class="text-2xl mb-4 text-center">Prior Authorization Form</h2>
+        <p class="text-gray-600 text-center mb-8">For requesting approval from the insurance company before services are rendered.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Patient Name -->
+            <div class="flex flex-col">
+                <label class="text-sm font-medium mb-1 flex items-center justify-between">
+                    Patient's Full Name
+                    <button class="hint-button" data-form="priorAuth" data-field="patient_name">Hint</button>
+                </label>
+                <input type="text" id="pa_patient_name" class="rounded-lg">
+            </div>
+
+            <!-- Insurance Name -->
+            <div class="flex flex-col">
+                <label class="text-sm font-medium mb-1 flex items-center justify-between">
+                    Insurance Plan Name
+                    <button class="hint-button" data-form="priorAuth" data-field="insurance_name">Hint</button>
+                </label>
+                <input type="text" id="pa_insurance_name" class="rounded-lg">
+            </div>
+
+            <!-- Requested Service -->
+            <div class="flex flex-col col-span-1 md:col-span-2 lg:col-span-3">
+                <label class="text-sm font-medium mb-1 flex items-center justify-between">
+                    Requested Service (e.g., CPT Code, Procedure)
+                    <button class="hint-button" data-form="priorAuth" data-field="service">Hint</button>
+                </label>
+                <textarea id="pa_service" rows="3" class="rounded-lg"></textarea>
+            </div>
+
+            <!-- Diagnosis Codes -->
+            <div class="flex flex-col col-span-1 md:col-span-2 lg:col-span-3">
+                <label class="text-sm font-medium mb-1 flex items-center justify-between">
+                    Diagnosis Codes (ICD-10-CM)
+                    <button class="hint-button" data-form="priorAuth" data-field="diagnosis">Hint</button>
+                </label>
+                <textarea id="pa_diagnosis" rows="3" class="rounded-lg"></textarea>
+            </div>
+
+            <!-- Clinical Justification -->
+            <div class="flex flex-col col-span-1 md:col-span-2 lg:col-span-3">
+                <label class="text-sm font-medium mb-1 flex items-center justify-between">
+                    Clinical Justification (Reason for Request)
+                    <button class="hint-button" data-form="priorAuth" data-field="justification">Hint</button>
+                </label>
+                <textarea id="pa_justification" rows="5" class="rounded-lg"></textarea>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CARC Quiz Section -->
+    <div id="carcQuiz" class="form-section">
+        <h2 class="text-2xl mb-4 text-center">CARC Quiz</h2>
+        <p class="text-gray-600 text-center mb-8">Test your knowledge of Claim Adjustment Reason Codes.</p>
+
+        <div class="bg-gray-50 rounded-lg p-6 mb-6">
+            <h3 id="quizQuestion" class="text-lg font-medium mb-4">Question loading...</h3>
+            <div id="answerOptions" class="space-y-3">
+                <!-- Answer buttons will be dynamically added here -->
+            </div>
+            <div id="feedback" class="mt-4 text-center font-semibold" style="min-height: 24px;"></div>
+            <button id="nextQuestionButton" class="mt-4 px-6 py-2 rounded-full text-white font-semibold bg-blue-600 hover:bg-blue-700 transition duration-300 w-full" style="display: none;">Next Question</button>
+        </div>
+    </div>
+
+</div>
+
+<div id="hintModal" class="modal">
+    <div class="modal-content">
+        <button id="closeModal" class="close-button">&times;</button>
+        <h3 id="modalTitle" class="text-xl font-semibold mb-2"></h3>
+        <p id="modalDescription" class="text-gray-700"></p>
+    </div>
+</div>
+
+<script>
+    // --- Data and Logic ---
+    const formInfo = {
+        cms1500: {
+            box1: {
+                title: "Box 1: Type of Insurance",
+                what: "Indicates the type of insurance plan being billed. Common options include Medicare, Medicaid, Tricare, or Commercial.",
+                why: "This helps the payer's system route the claim to the correct processing department and apply the appropriate rules and coverage policies. A mistake here can lead to an immediate claim denial."
+            },
+            box2: {
+                title: "Box 2: Patient's Name",
+                what: "Enter the patient's full name as it appears on their insurance card, typically in the format: Last Name, First Name, Middle Initial.",
+                why: "This is a critical identifier that links the claim to the correct patient's account and eligibility information. Mismatching this information can cause the claim to be rejected."
+            },
+            box21: {
+                title: "Box 21: Diagnosis Codes (ICD-10-CM)",
+                what: "List the patient's diagnosis codes that support the medical necessity of the services provided. You can list up to 12 codes, with the primary diagnosis listed first.",
+                why: "These codes justify why the services in Box 24 were necessary. Payers use these to determine if the services are covered under the patient's plan for a given condition. Without a supporting diagnosis, the claim will be denied."
+            },
+            box24_date: {
+                title: "Box 24A: Date of Service",
+                what: "Enter the date the service was rendered. For a range of dates, list the start and end dates.",
+                why: "This establishes when the service was performed. Payers use this date to check for eligibility on that specific day and to determine if the claim was filed within the timely filing limit."
+            },
+            box24_pos: {
+                title: "Box 24B: Place of Service",
+                what: "Use the two-digit code to specify where the service was performed (e.g., '11' for Office, '21' for Inpatient Hospital, '12' for Home).",
+                why: "This code helps the payer determine the correct reimbursement rate, as payment amounts can vary based on the location where the service was provided."
+            },
+            box24_cpt: {
+                title: "Box 24D: CPT/HCPCS Code",
+                what: "Enter the CPT or HCPCS code that describes the service or procedure provided. This code identifies what was done for the patient.",
+                why: "These codes are the core of the billing process. They tell the payer exactly what service was rendered, which is essential for determining coverage and payment based on their fee schedules."
+            },
+            box24_charge: {
+                title: "Box 24F: Charge",
+                what: "List the total charge for the service on this line item. This is the amount the provider is billing for the service.",
+                why: "This field communicates the cost of the service to the payer. The payer will then apply the patient's benefits (deductibles, co-pays, co-insurance) to this amount to calculate the final payment."
+            },
+            box24_pointer: {
+                title: "Box 24E: Diagnosis Pointer",
+                what: "This field connects the service to the diagnosis code in Box 21. Enter the letter (A-L) corresponding to the diagnosis code that supports the medical necessity for this service line.",
+                why: "This pointer is crucial for linking a specific service to the reason it was performed. If a service is not linked to a valid, billable diagnosis, the claim will be denied as not medically necessary."
+            }
+        },
+        ub04: {
+            box12: {
+                title: "Box 12: Admission Date",
+                what: "This is the month, day, and year the patient was admitted to the facility.",
+                why: "This date is critical for institutional claims as it establishes the start of the inpatient stay. The payer uses this to verify eligibility and determine the patient's benefits for the duration of the stay."
+            },
+            box13: {
+                title: "Box 13: Admission Hour",
+                what: "Enter the hour the patient was admitted. This is a two-digit military time format (e.g., '13' for 1 PM).",
+                why: "This helps to pinpoint the exact time of admission, which is especially important for determining if the stay crossed over into a new benefit period or if a hospital stay was less than a full day."
+            },
+            box66: {
+                title: "Box 66: Principal Diagnosis Code",
+                what: "Enter the ICD-10-CM code for the condition established after study to be the main reason for the patient's admission to the hospital.",
+                why: "This is the most important diagnosis on the UB-04. It drives the entire claim by explaining the primary reason for the hospital stay and justifying the medical necessity of all the services provided during that stay."
+            },
+            box42_revcode: {
+                title: "Box 42: Revenue Code",
+                what: "Use a four-digit revenue code to classify a specific service or item for which a charge is being made. For example, '0450' for emergency room services.",
+                why: "These codes tell the payer the type of service performed in the hospital (e.g., a lab test, a room charge, or supplies). They group services together and are essential for accurate billing and reimbursement."
+            },
+            box43_desc: {
+                title: "Box 43: Description",
+                what: "Provide a brief description of the revenue code and/or service provided on this line.",
+                why: "The description adds clarity and context to the revenue code, which can help a claims adjuster better understand the charge and prevent potential payment delays or denials."
+            },
+            box47_totalcharge: {
+                title: "Box 47: Total Charges",
+                what: "Enter the total charge for the services on this revenue code line.",
+                why: "This field communicates the billed amount for each revenue code line. The payer uses these charges to calculate the total claim amount and apply the appropriate reimbursement."
+            }
+        },
+        priorAuth: {
+            patient_name: {
+                title: "Patient's Full Name",
+                what: "The full name of the patient as it appears on their insurance card and medical record.",
+                why: "The name is a primary identifier used by the insurance company to locate the patient's file and verify that the request is for the correct individual. A mismatch can lead to an immediate denial of the authorization."
+            },
+            insurance_name: {
+                title: "Insurance Plan Name",
+                what: "The name of the patient's insurance plan, such as Blue Cross Blue Shield or Aetna.",
+                why: "This identifies the specific payer to which the request is being sent, ensuring the prior authorization is processed by the right department and against the correct coverage rules."
+            },
+            service: {
+                title: "Requested Service",
+                what: "Specify the exact service, procedure, or medication that requires prior authorization, often including the CPT/HCPCS code.",
+                why: "This field clearly communicates what the provider is seeking approval for. The payer will match this against their list of services that require pre-approval and check for medical necessity."
+            },
+            diagnosis: {
+                title: "Diagnosis Codes (ICD-10-CM)",
+                what: "The ICD-10 codes that describe the patient's condition and medically justify why the requested service is needed.",
+                why: "The diagnosis codes are the most critical part of the prior authorization request. They prove that the requested service is medically necessary for the patient's condition, which is a core requirement for approval."
+            },
+            justification: {
+                title: "Clinical Justification",
+                what: "A detailed explanation and supporting clinical notes that prove the requested service is the most appropriate and necessary course of action for the patient's diagnosis.",
+                why: "This narrative section provides the evidence needed for the payer to approve the request. It explains why a less expensive or less invasive treatment was not an option, and it's where you make the case for medical necessity."
+            }
+        }
+    };
+
+    const carcQuestions = [
+        {
+            question: "A claim for a routine office visit is denied, and the Explanation of Benefits (EOB) states that the patient is responsible for a fixed amount before the insurance company pays anything. Which CARC best describes this?",
+            answers: [
+                { code: "1", text: "Deductible", isCorrect: false, rationale: "Incorrect. While a deductible is a patient responsibility, it is a variable amount that must be met before insurance pays. A fixed amount is a copayment." },
+                { code: "2", text: "Coinsurance", isCorrect: false, rationale: "Incorrect. Coinsurance is a percentage of the allowed amount, not a fixed amount." },
+                { code: "3", text: "Copayment", isCorrect: true, rationale: "Correct! CARC 3 indicates that the patient is responsible for a fixed copayment amount, as per their health plan." },
+                { code: "16", text: "Claim/Service has missing information", isCorrect: false, rationale: "Incorrect. This code is for administrative denials, not for a patient's financial responsibility." }
+            ]
+        },
+        {
+            question: "An X-ray claim is partially paid, but a portion of the payment is reduced. The EOB says, 'This service is not a covered benefit under the terms of the patient's plan.' Which CARC is likely on this claim?",
+            answers: [
+                { code: "11", text: "Services not paid", isCorrect: false, rationale: "Incorrect. This is a generic code. There's a more specific code for non-covered services." },
+                { code: "50", text: "Non-covered services", isCorrect: true, rationale: "Correct! CARC 50 is used when the billed service is not a covered benefit under the patient's plan, resulting in a denial or partial payment." },
+                { code: "23", text: "Payment denied due to precertification/authorization", isCorrect: false, rationale: "Incorrect. This code is specifically for when prior authorization was required but not obtained." },
+                { code: "96", text: "Non-covered charges", isCorrect: false, rationale: "Incorrect. This is a more general code, whereas CARC 50 is specific to services that aren't covered by the plan." }
+            ]
+        },
+        {
+            question: "You submit a claim with an incomplete patient ID number. The payer denies the claim and sends an EOB that says, 'Missing or invalid patient identifier.' What CARC would you expect to see?",
+            answers: [
+                { code: "1", text: "Deductible", isCorrect: false, rationale: "Incorrect. This code is about patient financial responsibility, not administrative issues." },
+                { code: "4", text: "Procedure code missing/invalid", isCorrect: false, rationale: "Incorrect. This code refers to a problem with the CPT code, not the patient ID." },
+                { code: "16", text: "Claim/Service lacks information or has a different format", isCorrect: true, rationale: "Correct! CARC 16 is a very common administrative denial code used when a claim is missing required information like a patient ID, provider NPI, or has formatting errors." },
+                { code: "50", text: "Non-covered services", isCorrect: false, rationale: "Incorrect. This is a denial for a service that is not a covered benefit, not a data entry error." }
+            ]
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+
+    const cmsButton = document.getElementById('cmsButton');
+    const ub04Button = document.getElementById('ub04Button');
+    const priorAuthButton = document.getElementById('priorAuthButton');
+    const carcQuizButton = document.getElementById('carcQuizButton');
+    const cms1500Form = document.getElementById('cms1500Form');
+    const ub04Form = document.getElementById('ub04Form');
+    const priorAuthForm = document.getElementById('priorAuthForm');
+    const carcQuiz = document.getElementById('carcQuiz');
+    const hintButtons = document.querySelectorAll('.hint-button');
+    const hintModal = document.getElementById('hintModal');
+    const closeModalButton = document.getElementById('closeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDescription = document.getElementById('modalDescription');
+    const quizQuestionEl = document.getElementById('quizQuestion');
+    const answerOptionsEl = document.getElementById('answerOptions');
+    const feedbackEl = document.getElementById('feedback');
+    const nextQuestionButton = document.getElementById('nextQuestionButton');
+
+    // --- Functions ---
+    function toggleForm(formToShow) {
+        const allForms = [cms1500Form, ub04Form, priorAuthForm, carcQuiz];
+        const allButtons = [cmsButton, ub04Button, priorAuthButton, carcQuizButton];
+
+        allForms.forEach(form => form.classList.remove('active-form'));
+        allButtons.forEach(button => {
+            button.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'text-white');
+            button.classList.add('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
+        });
+
+        if (formToShow === 'cms1500') {
+            cms1500Form.classList.add('active-form');
+            cmsButton.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
+            cmsButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
+        } else if (formToShow === 'ub04') {
+            ub04Form.classList.add('active-form');
+            ub04Button.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
+            ub04Button.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
+        } else if (formToShow === 'priorAuth') {
+            priorAuthForm.classList.add('active-form');
+            priorAuthButton.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
+            priorAuthButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
+        } else if (formToShow === 'carcQuiz') {
+            carcQuiz.classList.add('active-form');
+            carcQuizButton.classList.remove('bg-gray-300', 'hover:bg-gray-400', 'text-gray-800');
+            carcQuizButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
+            showQuestion();
+        }
+    }
+
+    function showHint(formName, fieldName) {
+        const info = formInfo[formName][fieldName];
+        if (info) {
+            modalTitle.textContent = info.title;
+            // Use innerHTML to allow for a styled description with bolded parts
+            modalDescription.innerHTML = `<p><b>What:</b> ${info.what}</p><p class="mt-2"><b>Why:</b> ${info.why}</p>`;
+            hintModal.classList.add('active');
+        }
+    }
+
+    function hideHint() {
+        hintModal.classList.remove('active');
+    }
+
+    function showQuestion() {
+        if (currentQuestionIndex >= carcQuestions.length) {
+            quizQuestionEl.textContent = "You've completed the quiz! Click 'CARC Quiz' to restart.";
+            answerOptionsEl.innerHTML = '';
+            nextQuestionButton.style.display = 'none';
+            feedbackEl.textContent = '';
+            currentQuestionIndex = 0;
+            return;
+        }
+
+        const question = carcQuestions[currentQuestionIndex];
+        quizQuestionEl.textContent = question.question;
+        answerOptionsEl.innerHTML = '';
+        feedbackEl.textContent = '';
+        nextQuestionButton.style.display = 'none';
+
+        question.answers.forEach(answer => {
+            const button = document.createElement('button');
+            button.textContent = `${answer.code}: ${answer.text}`;
+            button.className = "quiz-button w-full text-left py-2 px-4 rounded-lg bg-gray-200 hover:bg-gray-300 transition duration-300";
+            button.onclick = () => checkAnswer(button, answer);
+            answerOptionsEl.appendChild(button);
+        });
+    }
+
+    function checkAnswer(button, answer) {
+        const allButtons = answerOptionsEl.querySelectorAll('button');
+        allButtons.forEach(btn => {
+            btn.disabled = true;
+            btn.classList.remove('bg-gray-200', 'hover:bg-gray-300');
+        });
+
+        if (answer.isCorrect) {
+            button.classList.add('bg-green-500', 'text-white');
+            feedbackEl.textContent = "Correct! " + answer.rationale;
+            feedbackEl.style.color = '#10B981';
+        } else {
+            button.classList.add('bg-red-500', 'text-white');
+            const correctButton = Array.from(allButtons).find(btn => {
+                const answerData = carcQuestions[currentQuestionIndex].answers.find(a => `${a.code}: ${a.text}` === btn.textContent);
+                return answerData && answerData.isCorrect;
+            });
+            if (correctButton) {
+                correctButton.classList.add('bg-green-500', 'text-white');
+            }
+            feedbackEl.textContent = "Incorrect. " + answer.rationale;
+            feedbackEl.style.color = '#EF4444';
+        }
+        nextQuestionButton.style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        showQuestion();
+    }
+
+    // --- Event Listeners ---
+    cmsButton.addEventListener('click', () => toggleForm('cms1500'));
+    ub04Button.addEventListener('click', () => toggleForm('ub04'));
+    priorAuthButton.addEventListener('click', () => toggleForm('priorAuth'));
+    carcQuizButton.addEventListener('click', () => toggleForm('carcQuiz'));
+    nextQuestionButton.addEventListener('click', nextQuestion);
+
+    hintButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            const formName = event.target.dataset.form;
+            const fieldName = event.target.dataset.field;
+            showHint(formName, fieldName);
+        });
+    });
+
+    closeModalButton.addEventListener('click', hideHint);
+
+    window.onclick = function(event) {
+        if (event.target == hintModal) {
+            hideHint();
+        }
+    }
+</script>
+
+</body>
+</html>
