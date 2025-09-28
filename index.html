@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Healthcare Admin Training Hub</title>
+  <title>Healthcare Customer Service Training Suite</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f4f4f4;
       padding: 30px;
     }
-    h1 {
+    h1, h2 {
       text-align: center;
       color: #2c3e50;
     }
@@ -27,7 +27,7 @@
       background: #fff;
       padding: 20px;
       border-radius: 8px;
-      max-width: 800px;
+      max-width: 900px;
       margin: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       margin-bottom: 40px;
@@ -60,7 +60,7 @@
 </head>
 <body>
 
-<h1>Healthcare Admin Training Hub</h1>
+<h1>Healthcare Customer Service Training Suite</h1>
 <nav>
   <a href="#cms1500">CMS-1500</a>
   <a href="#ub04">UB-04</a>
@@ -69,49 +69,62 @@
   <a href="#dashboard">Dashboard</a>
 </nav>
 
-<!-- CMS-1500 Simulator -->
+<!-- CMS-1500 Form -->
 <section id="cms1500">
   <h2>CMS-1500 Claim Form</h2>
   <form id="cmsForm">
-    <label>Patient Name</label>
-    <input type="text" id="cmsName">
-    <label>Date of Birth</label>
-    <input type="date" id="cmsDOB">
-    <label>Insurance Type</label>
-    <select id="cmsInsurance">
+    <label>Insurance Type (Box 1)</label>
+    <select id="insurance">
       <option value="">--Select--</option>
       <option value="Medicare">Medicare</option>
       <option value="Medicaid">Medicaid</option>
       <option value="Commercial">Commercial</option>
     </select>
-    <label>ICD-10 Code</label>
-    <input type="text" id="cmsICD">
-    <label>CPT Code</label>
-    <input type="text" id="cmsCPT">
-    <label>Provider NPI</label>
-    <input type="text" id="cmsNPI">
-    <label>Date of Service</label>
-    <input type="date" id="cmsService">
+    <label>Patient Name (Box 2)</label><input type="text" id="patientName">
+    <label>Date of Birth (Box 3)</label><input type="date" id="dob">
+    <label>Insured’s Name (Box 4)</label><input type="text" id="insuredName">
+    <label>Patient Address (Box 5)</label><input type="text" id="patientAddress">
+    <label>Relationship to Insured (Box 6)</label>
+    <select id="relationship">
+      <option value="">--Select--</option>
+      <option value="Self">Self</option>
+      <option value="Spouse">Spouse</option>
+      <option value="Child">Child</option>
+      <option value="Other">Other</option>
+    </select>
+    <label>Insured’s Address (Box 7)</label><input type="text" id="insuredAddress">
+    <label>Policy/Group Number (Box 11)</label><input type="text" id="policyNumber">
+    <label>Patient Signature (Box 12)</label><input type="text" id="patientSignature">
+    <label>Insured Signature (Box 13)</label><input type="text" id="insuredSignature">
+    <label>Referring Provider (Box 17)</label><input type="text" id="referringProvider">
+    <label>ICD-10 Code (Box 21)</label><input type="text" id="icdCode">
+    <label>Prior Authorization Number (Box 23)</label><input type="text" id="authNumber">
+    <label>Date of Service (Box 24A)</label><input type="date" id="serviceDate">
+    <label>Place of Service Code (Box 24B)</label><input type="text" id="placeOfService">
+    <label>CPT Code (Box 24D)</label><input type="text" id="cptCode">
+    <label>Rendering Provider NPI (Box 24J)</label><input type="text" id="renderingNPI">
+    <label>Service Facility Location (Box 32)</label><input type="text" id="facilityLocation">
+    <label>Billing Provider Info (Box 33)</label><input type="text" id="billingProvider">
+    <label>Billing Provider NPI (Box 33a)</label><input type="text" id="billingNPI">
     <button type="submit">Submit CMS-1500</button>
   </form>
 </section>
 
-<!-- UB-04 Simulator -->
+<!-- UB-04 Form -->
 <section id="ub04">
   <h2>UB-04 Institutional Claim Form</h2>
   <form id="ubForm">
-    <label>Facility Name</label>
-    <input type="text" id="ubFacility">
-    <label>Admission Date</label>
-    <input type="date" id="ubAdmission">
-    <label>Discharge Date</label>
-    <input type="date" id="ubDischarge">
-    <label>Revenue Code</label>
-    <input type="text" id="ubRevenue">
-    <label>ICD-10 Diagnosis</label>
-    <input type="text" id="ubICD">
-    <label>Total Charges</label>
-    <input type="number" id="ubCharges">
+    <label>Facility Name</label><input type="text" id="ubFacility">
+    <label>Admission Date</label><input type="date" id="ubAdmission">
+    <label>Discharge Date</label><input type="date" id="ubDischarge">
+    <label>Type of Bill</label><input type="text" id="ubTypeBill">
+    <label>Condition Code</label><input type="text" id="ubCondition">
+    <label>Occurrence Code</label><input type="text" id="ubOccurrence">
+    <label>Value Code</label><input type="text" id="ubValue">
+    <label>Revenue Code</label><input type="text" id="ubRevenue">
+    <label>ICD-10 Diagnosis</label><input type="text" id="ubICD">
+    <label>Total Charges</label><input type="number" id="ubCharges">
+    <label>Payer Info</label><input type="text" id="ubPayer">
     <button type="submit">Submit UB-04</button>
   </form>
 </section>
@@ -120,20 +133,14 @@
 <section id="hipaa">
   <h2>HIPAA Consent Form</h2>
   <form id="hipaaForm">
-    <label>Patient Name</label>
-    <input type="text" id="hipaaName">
+    <label>Patient Name</label><input type="text" id="hipaaName">
     <label>
-      <input type="checkbox" id="hipaaAgree">
-      I acknowledge HIPAA compliance
+      <input type="checkbox" id="hipaaAgree"> I acknowledge HIPAA compliance
     </label>
-    <label>Signature (Type Name)</label>
-    <input type="text" id="hipaaSignature">
-    <label>Disclosure Purpose</label>
-    <input type="text" id="hipaaPurpose">
-    <label>Recipient of Info</label>
-    <input type="text" id="hipaaRecipient">
-    <label>Expiration Date</label>
-    <input type="date" id="hipaaExpire">
+    <label>Signature (Type Name)</label><input type="text" id="hipaaSignature">
+    <label>Disclosure Purpose</label><input type="text" id="hipaaPurpose">
+    <label>Recipient of Info</label><input type="text" id="hipaaRecipient">
+    <label>Expiration Date</label><input type="date" id="hipaaExpire">
     <button type="submit">Submit HIPAA Form</button>
   </form>
 </section>
@@ -148,14 +155,14 @@
 <section id="dashboard">
   <h2>Patient Workflow Dashboard</h2>
   <form id="statusForm">
-    <label>Patient Name</label>
-    <input type="text" id="dashName">
+    <label>Patient Name</label><input type="text" id="dashName">
     <label>Status</label>
     <select id="dashStatus">
       <option value="">--Select--</option>
       <option value="Checked In">Checked In</option>
       <option value="Vitals Taken">Vitals Taken</option>
       <option value="Ready for Provider">Ready for Provider</option>
+      <option value="Billing Complete">Billing Complete</option>
     </select>
     <button type="submit">Update Status</button>
   </form>
@@ -178,8 +185,7 @@
   // HIPAA
   document.getElementById("hipaaForm").addEventListener("submit", function(e) {
     e.preventDefault();
-    const agreed = document.getElementById("hipaaAgree").checked;
-    if (!agreed) {
+    if (!document.getElementById("hipaaAgree").checked) {
       alert("⚠️ Please acknowledge HIPAA compliance.");
       return;
     }
@@ -189,51 +195,4 @@
   // Quiz Engine
   const scenarios = [
     {
-      question: "Patient presents with chest pain. What ICD-10 code applies?",
-      options: ["R07.9", "I10", "E11.9"],
-      answer: "R07.9"
-    },
-    {
-      question: "Which box on CMS-1500 contains the diagnosis code?",
-      options: ["Box 21", "Box 24D", "Box 33a"],
-      answer: "Box 21"
-    },
-    {
-      question: "What does revenue code 0300 represent?",
-      options: ["Radiology", "Laboratory", "Surgery"],
-      answer: "Laboratory"
-    }
-  ];
-  const quizDiv = document.getElementById("quizContainer");
-  scenarios.forEach((q, i) => {
-    const block = document.createElement("div");
-    block.innerHTML = `<p><strong>Q${i+1}:</strong> ${q.question}</p>`;
-    q.options.forEach(opt => {
-      const btn = document.createElement("button");
-      btn.textContent = opt;
-      btn.onclick = () => {
-        if (opt === q.answer) {
-          alert("✅ Correct!");
-        } else {
-          alert(`❌ Incorrect. Correct answer: ${q.answer}`);
-        }
-      };
-      block.appendChild(btn);
-    });
-    quizDiv.appendChild(block);
-  });
-
-  // Dashboard
-  document.getElementById("statusForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    const name = document.getElementById("dashName").value;
-    const status = document.getElementById("dashStatus").value;
-    const log = document.getElementById("statusLog");
-    const entry = document.createElement("p");
-    entry.textContent = `🩺 ${name} → ${status}`;
-    log.appendChild(entry);
-  });
-</script>
-
-</body>
-</html>
+      question: "Patient presents with chest pain. What ICD-10 code applies
